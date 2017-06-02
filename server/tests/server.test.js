@@ -127,7 +127,7 @@ describe('DELETE /todos/:id', () => {
             });
     });
 
-    it('Should not remove a todo owned by other user', (done) => {
+    it('Should not remove a todo created by other user', (done) => {
         var hexId = todos[0]._id.toHexString();
 
         request(app)
@@ -183,7 +183,7 @@ describe('PATCH /todos/:id', () => {
             .end(done);
     });
 
-    it('Should not update the todo creat by other user', (done) => {
+    it('Should not update the todo created by other user', (done) => {
         var hexId = todos[0]._id.toHexString();
         var text = "Update text"
         var completed = true;
