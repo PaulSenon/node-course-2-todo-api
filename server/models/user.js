@@ -26,6 +26,10 @@ var UserSchema = new mongoose.Schema({
             type: String,
             required: true
         },
+        ip: {
+            type: String,
+            required: true
+        },
         token: {
             type: String,
             required: true
@@ -55,12 +59,13 @@ UserSchema.methods.toJSON = function() {
     return _.pick(userObject, ['_id', 'email']);
 };
 
-UserSchema.methods.generateAuthToken = function () {
+UserSchema.methods.generateAuthToken = function (req) {
     var user = this;
+    var ip = req.connection.remoteAddress;
     var access = 'auth';
-    var token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
+    var token = jwt.sign({_id: user._id.toHexString(), access, ip}, process.env.JWT_SECRET).toString();
 
-    user.tokens.push({access, token});
+    user.tokens.push({access, ip, token});
 
     return user.save().then(() => {
         return token;
@@ -112,6 +117,7 @@ UserSchema.statics.findByToken = function (token) {
 
     return User.findOne({
         '_id': decoded._id,
+        'tokens.ip': decoded.ip,
         'tokens.token': token,
         'tokens.access': 'auth'
     });

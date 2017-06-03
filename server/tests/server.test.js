@@ -13,7 +13,6 @@ beforeEach(populateTodos);
 describe('POST /todos', () => {
     it('Should create a new todo', (done) => {
         var text = 'Test todo text';
-
         request(app)
             .post('/todos')
             .set('x-auth', users[0].tokens[0].token)
